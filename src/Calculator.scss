@@ -1,0 +1,68 @@
+@import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@300&display=swap");
+
+// VARIABLES
+
+// Colors
+$display-color: black;
+$output-color: orange;
+$formula-colour: white;
+
+// DIMENSIONS
+$border-radius: 0.75rem;
+$font: "Quicksand", sans-serif, Helvetica, "Lucida Sans";
+
+body {
+  font-family: $font;
+}
+
+.wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: auto;
+  height: 100vh;
+}
+
+.calculator {
+  border: 2px solid;
+  height: 32.5rem;
+  width: 25rem;
+  border-radius: $border-radius;
+  background-color: $display-color;
+}
+
+.display-wrapper {
+  height: 7.5rem;
+  border-top-left-radius: $border-radius;
+  border-top-right-radius: $border-radius;
+  .display {
+    text-align: right;
+    margin-right: 0.5rem;
+    font-size: 0;
+    display: flex;
+    flex-direction: column;
+    .output {
+      font-size: 1.5rem;
+      height: 2.5rem;
+      color: $output-color;
+    }
+    .formula {
+      font-size: 2rem;
+      height: 4rem;
+      color: $formula-colour;
+    }
+  }
+}
+
+.buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: auto;
+  height: 25rem;
+  border-bottom-left-radius: $border-radius;
+  border-bottom-right-radius: $border-radius;
+  // Below are placeholders (remove)
+  background-color: white;
+  font-size: 40px;
+}
