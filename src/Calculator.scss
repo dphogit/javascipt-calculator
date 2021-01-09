@@ -5,7 +5,9 @@
 // Colors
 $display-color: black;
 $output-color: orange;
-$formula-colour: white;
+$formula-color: white;
+$button-font-color: black;
+$button-border-color: grey;
 
 // DIMENSIONS
 $border-radius: 0.75rem;
@@ -46,20 +48,19 @@ body {
     font-size: 0;
     display: flex;
     flex-direction: column;
-    .output {
+    .formula {
       font-size: 1.5rem;
-      height: 3.5rem;
+      height: 2rem;
       color: $output-color;
       p {
         padding-top: 0.5rem;
       }
     }
-    .formula {
-      font-size: 2rem;
-      height: 6.5rem;
-      color: $formula-colour;
+    .output {
+      font-size: 3rem;
+      color: $formula-color;
       p {
-        padding-top: 1rem;
+        padding-top: 0.75rem;
       }
     }
   }
@@ -69,19 +70,23 @@ body {
   height: 20rem;
   border-bottom-left-radius: $border-radius;
   border-bottom-right-radius: $border-radius;
-  // Below are placeholders (remove)
-  background-color: white;
   button {
     height: $button-height;
     width: $button-width;
+    border: 1px solid $button-border-color;
     border-radius: 0;
     position: relative;
+    font-family: $font;
+    color: $button-font-color;
+    font-size: 1.25rem;
+    outline: none;
   }
   .two-span {
     width: $two-span-width;
   }
   #zero {
     bottom: 2rem;
+    border-bottom-left-radius: $border-radius;
   }
   #decimal {
     bottom: 2rem;
@@ -89,5 +94,6 @@ body {
   #equals {
     height: $two-span-height;
     bottom: 4rem;
+    border-bottom-right-radius: $border-radius;
   }
 }
