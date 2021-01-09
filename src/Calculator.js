@@ -1,10 +1,13 @@
 import "./Calculator.scss";
 import React from "react";
 
+// TODO - Overall clean up code and put into appropriate files
+
 // Constant variables
 const DECIMAL = ".",
   DEFAULT_OUTPUT = "0",
   DEFAULT_FORMULA = "",
+  DIGIT = /\d/,
   OPERATORS = /[+*/-]/;
 
 function App() {
@@ -41,6 +44,7 @@ class Calculator extends React.Component {
     });
   }
 
+  // TODO - Implement handleDecimal functionality
   handleDecimal() {
     if (
       !this.state.output.includes(DECIMAL) &&
@@ -52,32 +56,64 @@ class Calculator extends React.Component {
 
   handleNumber(e) {
     const number = e.target.value;
-    // If operator or it is default display (i.e. 0), replace the entire display with this number
+    // If operator or it is default display (i.e. 0), replace the entire display with this number and add the number onto the formula expression
     if (
       OPERATORS.test(this.state.output) ||
       this.state.output === DEFAULT_OUTPUT
     ) {
       this.setState({
         output: number,
+        formula: this.state.formula + number,
       });
     }
-    // Otherwise, add the number onto the output string (i.e. For 2+ digit numbers)
+    // Otherwise, add the number onto the output string (i.e. For 2+ digit numbers) and formula expression
     else {
       this.setState({
         output: this.state.output + number,
+        formula: this.state.formula + number,
       });
     }
   }
 
+  // TODO - Tidy Up handleNumber code
   handleOperator(e) {
     const operatorEntered = e.target.value;
     this.setState({ output: operatorEntered });
-    // Formulae logic - use later, only get display working for now
-    // if (operatorEntered === "-") {
-    //   this.setState({ output: this.state.output + operatorEntered });
-    // } else {
-    //   this.setState({ output: operatorEntered });
-    // }
+
+    const checkLastTwoAreOperators = (formula) => {
+      const lastTwo = formula.slice(formula.length - 2);
+
+      for (let char of lastTwo) {
+        if (!OPERATORS.test(char)) {
+          return false;
+        }
+      }
+      return true;
+    };
+
+    if (DIGIT.test(this.state.formula[this.state.formula.length - 1])) {
+      this.setState({ formula: this.state.formula + operatorEntered });
+    } else if (
+      operatorEntered === "-" &&
+      !checkLastTwoAreOperators(this.state.formula)
+    ) {
+      this.setState({ formula: this.state.formula + "-" });
+    } else if (
+      checkLastTwoAreOperators(this.state.formula) &&
+      operatorEntered !== "-"
+    ) {
+      this.setState({
+        formula:
+          this.state.formula.slice(0, this.state.formula.length - 2) +
+          operatorEntered,
+      });
+    } else {
+      this.setState({
+        formula:
+          this.state.formula.slice(0, this.state.formula.length - 1) +
+          operatorEntered,
+      });
+    }
   }
 
   handleZero() {
@@ -92,7 +128,7 @@ class Calculator extends React.Component {
     return (
       <div className="calculator">
         <div className="display-wrapper">
-          <div id="display">
+          <div id="display-screen">
             <Formula formula={this.state.formula} />
             <Output output={this.state.output} />
           </div>
@@ -180,7 +216,7 @@ const Formula = (props) => {
 // Displays the current input/answer e.g. entering 9 will replace the screen with 9 (one value at a time)
 const Output = (props) => {
   return (
-    <div className="output">
+    <div className="output" id="display">
       <p>{props.output}</p>
     </div>
   );
