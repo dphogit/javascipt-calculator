@@ -26,11 +26,13 @@ class Calculator extends React.Component {
     this.state = {
       output: DEFAULT_OUTPUT,
       formula: DEFAULT_FORMULA,
+      evaluated: false,
     };
 
     // Binding statements
     this.handleClear = this.handleClear.bind(this);
     this.handleDecimal = this.handleDecimal.bind(this);
+    this.handleEvaluate = this.handleEvaluate.bind(this);
     this.handleNumber = this.handleNumber.bind(this);
     this.handleOperator = this.handleOperator.bind(this);
     this.handleZero = this.handleZero.bind(this);
@@ -44,13 +46,28 @@ class Calculator extends React.Component {
     });
   }
 
-  // TODO - Implement handleDecimal functionality
   handleDecimal() {
     if (
       !this.state.output.includes(DECIMAL) &&
       !OPERATORS.test(this.state.output)
     ) {
-      this.setState({ output: this.state.output + DECIMAL });
+      this.setState({
+        output: this.state.output + DECIMAL,
+        formula: this.state.formula + DECIMAL,
+      });
+    }
+  }
+
+  // Uses eval() because the source is known unless code directly edited (source - string containing mathematical oerpations to be calculated)
+  handleEvaluate() {
+    if (this.state.evaluated === false) {
+      // eslint-disable-next-line
+      const answer = eval(this.state.formula);
+      this.setState({
+        output: answer,
+        formula: this.state.formula + "=" + answer,
+        evaluated: true,
+      });
     }
   }
 
@@ -91,7 +108,14 @@ class Calculator extends React.Component {
       return true;
     };
 
-    if (DIGIT.test(this.state.formula[this.state.formula.length - 1])) {
+    if (this.state.evaluated === true) {
+      this.setState({
+        formula:
+          this.state.formula.slice(this.state.formula.indexOf("=") + 1) +
+          operatorEntered,
+        evaluated: false,
+      });
+    } else if (DIGIT.test(this.state.formula[this.state.formula.length - 1])) {
       this.setState({ formula: this.state.formula + operatorEntered });
     } else if (
       operatorEntered === "-" &&
@@ -120,6 +144,7 @@ class Calculator extends React.Component {
     if (this.state.output !== DEFAULT_OUTPUT) {
       this.setState({
         output: this.state.output + DEFAULT_OUTPUT,
+        formula: this.state.formula + DEFAULT_OUTPUT,
       });
     }
   }
@@ -136,6 +161,7 @@ class Calculator extends React.Component {
         <Buttons
           handleClear={this.handleClear}
           handleDecimal={this.handleDecimal}
+          handleEvaluate={this.handleEvaluate}
           handleNumber={this.handleNumber}
           handleOperator={this.handleOperator}
           handleZero={this.handleZero}
@@ -197,7 +223,9 @@ const Buttons = (props) => {
       <button id="decimal" onClick={props.handleDecimal}>
         .
       </button>
-      <button id="equals">=</button>
+      <button id="equals" onClick={props.handleEvaluate}>
+        =
+      </button>
     </div>
   );
 };
