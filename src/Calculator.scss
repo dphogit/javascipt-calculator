@@ -10,6 +10,10 @@ $formula-colour: white;
 // DIMENSIONS
 $border-radius: 0.75rem;
 $font: "Quicksand", sans-serif, Helvetica, "Lucida Sans";
+$button-height: 4rem;
+$button-width: 5rem;
+$two-span-width: 10rem;
+$two-span-height: 8rem;
 
 body {
   font-family: $font;
@@ -25,17 +29,18 @@ body {
 
 .calculator {
   border: 2px solid;
-  height: 32.5rem;
-  width: 25rem;
+  height: 30rem;
+  width: 20rem;
   border-radius: $border-radius;
   background-color: $display-color;
 }
 
 .display-wrapper {
-  height: 7.5rem;
+  height: 10rem;
   border-top-left-radius: $border-radius;
   border-top-right-radius: $border-radius;
-  .display {
+  #display {
+    height: 100%;
     text-align: right;
     margin-right: 0.5rem;
     font-size: 0;
@@ -43,26 +48,46 @@ body {
     flex-direction: column;
     .output {
       font-size: 1.5rem;
-      height: 2.5rem;
+      height: 3.5rem;
       color: $output-color;
+      p {
+        padding-top: 0.5rem;
+      }
     }
     .formula {
       font-size: 2rem;
-      height: 4rem;
+      height: 6.5rem;
       color: $formula-colour;
+      p {
+        padding-top: 1rem;
+      }
     }
   }
 }
 
 .buttons {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: auto;
-  height: 25rem;
+  height: 20rem;
   border-bottom-left-radius: $border-radius;
   border-bottom-right-radius: $border-radius;
   // Below are placeholders (remove)
   background-color: white;
-  font-size: 40px;
+  button {
+    height: $button-height;
+    width: $button-width;
+    border-radius: 0;
+    position: relative;
+  }
+  .two-span {
+    width: $two-span-width;
+  }
+  #zero {
+    bottom: 2rem;
+  }
+  #decimal {
+    bottom: 2rem;
+  }
+  #equals {
+    height: $two-span-height;
+    bottom: 4rem;
+  }
 }

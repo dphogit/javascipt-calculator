@@ -19,7 +19,7 @@ class Calculator extends React.Component {
     return (
       <div className="calculator">
         <div className="display-wrapper">
-          <div className="display">
+          <div id="display">
             <Output />
             <Formula />
           </div>
@@ -34,7 +34,27 @@ class Calculator extends React.Component {
 const Buttons = (props) => {
   return (
     <div className="buttons">
-      <p>Buttons</p>
+      <button id="AC" className="two-span">
+        AC
+      </button>
+      <button id="divide">/</button>
+      <button id="multiply">x</button>
+      <button id="seven">7</button>
+      <button id="eight">8</button>
+      <button id="nine">9</button>
+      <button id="subtract">-</button>
+      <button id="four">4</button>
+      <button id="five">5</button>
+      <button id="six">6</button>
+      <button id="add">+</button>
+      <button id="one">1</button>
+      <button id="two">2</button>
+      <button id="three">3</button>
+      <button id="zero" className="two-span">
+        0
+      </button>
+      <button id="decimal">.</button>
+      <button id="equals">=</button>
     </div>
   );
 };
