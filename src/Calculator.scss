@@ -6,8 +6,8 @@
 $display-color: #333a4d;
 $output-color: #ff9100;
 $formula-color: white;
-$button-font-color: black;
-$button-border-color: grey;
+$button-font-color: rgb(0, 0, 0);
+$border-color: #1d1e22;
 $button-back-color: rgba(245, 245, 245, 0.9);
 $operator-back-color: #f5900c;
 
@@ -21,6 +21,7 @@ $two-span-height: 8rem;
 
 body {
   font-family: $font;
+  background-image: linear-gradient(to bottom, #373481, #9aa7c2);
 }
 
 .wrapper {
@@ -34,6 +35,7 @@ body {
 .calculator {
   height: 30rem;
   width: 20rem;
+  border: 0.125rem solid $border-color;
   border-radius: $border-radius;
   background-color: $display-color;
 }
@@ -42,7 +44,6 @@ body {
   height: 10rem;
   border-top-left-radius: $border-radius;
   border-top-right-radius: $border-radius;
-  max-width: 100%;
   #display-screen {
     height: 100%;
     text-align: right;
@@ -51,11 +52,12 @@ body {
     display: flex;
     flex-direction: column;
     .formula {
-      font-size: 1.5rem;
+      font-size: 1.375rem;
       height: 2rem;
       color: $output-color;
       p {
         padding-top: 0.5rem;
+        max-width: 20rem;
       }
     }
     .output {
@@ -75,7 +77,7 @@ body {
   button {
     height: $button-height;
     width: $button-width;
-    border: 1px solid $button-border-color;
+    border: 1px solid $border-color;
     border-radius: 0;
     position: relative;
     font-family: $font;

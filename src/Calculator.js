@@ -1,16 +1,12 @@
 import "./Calculator.scss";
 import React from "react";
 
-// TODO - Overall clean up code and put into appropriate files
-// TODO - Handle exceeding screen
-// TODO - Add Styles
-
 // Constant variables
 const DECIMAL = ".",
   DEFAULT_OUTPUT = "0",
   DEFAULT_FORMULA = "",
   DIGIT = /\d/,
-  MAX_NUM_DIGITS = 10,
+  MAX_NUM_DIGITS = 8,
   MAX_DIGITS_REACHED_MESSAGE = "DIGIT LIMIT MET",
   OPERATORS = /[+*/-]/;
 
@@ -34,9 +30,7 @@ class Calculator extends React.Component {
     };
 
     // Binding statements
-    this.displayMaximumDigitsReached = this.displayMaximumDigitsReached.bind(
-      this
-    );
+    this.displayMaxDigitsReached = this.displayMaxDigitsReached.bind(this);
     this.handleClear = this.handleClear.bind(this);
     this.handleDecimal = this.handleDecimal.bind(this);
     this.handleEvaluate = this.handleEvaluate.bind(this);
@@ -46,16 +40,16 @@ class Calculator extends React.Component {
   }
 
   // When the maximum number of digits that can fit on screen is exceeded, display message with 'blinking effect'
-  displayMaximumDigitsReached() {
+  displayMaxDigitsReached() {
     const currentValue = this.state.output;
     this.setState({ output: MAX_DIGITS_REACHED_MESSAGE });
-    setTimeout(() => this.setState({ output: "" }), 1000);
+    setTimeout(() => this.setState({ output: "" }), 500);
     setTimeout(
       () => this.setState({ output: MAX_DIGITS_REACHED_MESSAGE }),
-      2000
+      1000
     );
-    setTimeout(() => this.setState({ output: "" }), 3000);
-    setTimeout(() => this.setState({ output: currentValue }), 4000);
+    setTimeout(() => this.setState({ output: "" }), 1500);
+    setTimeout(() => this.setState({ output: currentValue }), 2000);
   }
 
   // Note: handleClear will clear both the output AND memory(formula)
@@ -81,8 +75,14 @@ class Calculator extends React.Component {
   // Uses eval() because the source is known unless code directly edited (source - string containing mathematical oerpations to be calculated)
   handleEvaluate() {
     if (this.state.evaluated === false) {
-      // eslint-disable-next-line
-      const answer = eval(this.state.formula);
+      // allow 5 decimal places
+      let answer =
+        // eslint-disable-next-line no-eval
+        Math.round((eval(this.state.formula) + Number.EPSILON) * 100000) /
+        100000;
+      if (String(answer).length >= MAX_NUM_DIGITS) {
+        answer = answer.toExponential(1);
+      }
       this.setState({
         output: answer,
         formula: this.state.formula + "=" + answer,
@@ -93,7 +93,7 @@ class Calculator extends React.Component {
 
   handleNumber(e) {
     if (this.state.output.length > MAX_NUM_DIGITS) {
-      this.displayMaximumDigitsReached();
+      this.displayMaxDigitsReached();
     } else {
       const number = e.target.value;
       if (
