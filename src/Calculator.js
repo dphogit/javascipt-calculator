@@ -1,7 +1,10 @@
 import "./Calculator.scss";
 import React from "react";
 
-// Constant variables
+import Buttons from "./Buttons";
+import { Formula, Output } from "./Display";
+
+// CONSTANT VARIABLES
 const DECIMAL = ".",
   DEFAULT_OUTPUT = "0",
   DEFAULT_FORMULA = "",
@@ -10,6 +13,7 @@ const DECIMAL = ".",
   MAX_DIGITS_REACHED_MESSAGE = "DIGIT LIMIT MET",
   OPERATORS = /[+*/-]/;
 
+// Exported Component - Calculator Application
 function App() {
   return (
     <div className="wrapper">
@@ -18,7 +22,7 @@ function App() {
   );
 }
 
-// Calculator component will contain the heavy logic
+// Calculator Parent Component which contains the heavy logic
 class Calculator extends React.Component {
   constructor(props) {
     super(props);
@@ -39,7 +43,7 @@ class Calculator extends React.Component {
     this.handleZero = this.handleZero.bind(this);
   }
 
-  // When the maximum number of digits that can fit on screen is exceeded, display message with 'blinking effect'
+  // When the maximum number of digits that can fit on screen is exceeded, this method displays a 'MAX DIGITS' message with a 'blinking effect' by alternatively switching the display screen between the last value on the display screen and the message through set time intervals of 500ms (0.5s)
   displayMaxDigitsReached() {
     const currentValue = this.state.output;
     this.setState({ output: MAX_DIGITS_REACHED_MESSAGE });
@@ -92,10 +96,13 @@ class Calculator extends React.Component {
   }
 
   handleNumber(e) {
+    // Make sure the maximum number of digits inputted already does not exceed set limit
     if (this.state.output.length > MAX_NUM_DIGITS) {
       this.displayMaxDigitsReached();
     } else {
+      // Executes as within digit limit
       const number = e.target.value;
+      // Checks for whether we need to either replace the oeprator with the number or simply add it onto the display with other inputted numbers. Both scenarios will add the number onto the formula expression.
       if (
         OPERATORS.test(this.state.output) ||
         this.state.output === DEFAULT_OUTPUT
@@ -118,6 +125,7 @@ class Calculator extends React.Component {
     const formulaLength = this.state.formula.length;
     this.setState({ output: operatorEntered });
 
+    // Helper function to check whether the last two characters in the formula are operators. Returns true or false which helps with control flow for what to do with the operator is inputted.
     const checkLastTwoAreOperators = (formula) => {
       const lastTwo = formula.slice(formula.length - 2);
 
@@ -129,6 +137,7 @@ class Calculator extends React.Component {
       return true;
     };
 
+    // First check if the formula has already been evaluated, if so then we want to perform new operations on the provided answer.
     if (this.state.evaluated === true) {
       this.setState({
         formula:
@@ -136,14 +145,20 @@ class Calculator extends React.Component {
           operatorEntered,
         evaluated: false,
       });
-    } else if (DIGIT.test(this.state.formula[formulaLength - 1])) {
+    }
+    // Check if the last character in the formula string is a digit, we can just add the operator onto the string for evaluation.
+    else if (DIGIT.test(this.state.formula[formulaLength - 1])) {
       this.setState({ formula: this.state.formula + operatorEntered });
-    } else if (
+    }
+    // Special exception for '-' operator because numbers can be negative as well in the formulae expression (e.g. 5 * -5 = -25). So check if the oeprator entered is negative and that the last two characters are NOT operators which we can then add the '-' operator onto the formulae expression for evaluation.
+    else if (
       operatorEntered === "-" &&
       !checkLastTwoAreOperators(this.state.formula)
     ) {
       this.setState({ formula: this.state.formula + "-" });
-    } else if (
+    }
+    // If the last two characters in the formula expression are operators and the operator entered is NOT the minus sign, replace the last two operators with the new operator entered. e.g. Entering '*' when display is '5+-' --> '5*'
+    else if (
       checkLastTwoAreOperators(this.state.formula) &&
       operatorEntered !== "-"
     ) {
@@ -151,7 +166,9 @@ class Calculator extends React.Component {
         formula:
           this.state.formula.slice(0, formulaLength - 2) + operatorEntered,
       });
-    } else {
+    }
+    // Otherwise the operator entered is not compatible with the previous single operator and we simply replace it with the new one entered.
+    else {
       this.setState({
         formula:
           this.state.formula.slice(0, formulaLength - 1) + operatorEntered,
@@ -160,6 +177,7 @@ class Calculator extends React.Component {
   }
 
   handleZero() {
+    // Check so that we do not add a zero onto the default value of 0. Prevents display with only two consecutive zeros. (e.g. 00 will not occur but 100 is okay)
     if (this.state.output !== DEFAULT_OUTPUT) {
       this.setState({
         output: this.state.output + DEFAULT_OUTPUT,
@@ -190,109 +208,6 @@ class Calculator extends React.Component {
     );
   }
 }
-
-// Buttons - child component of the Calculator parent component
-const Buttons = (props) => {
-  return (
-    <div className="buttons">
-      <button
-        id="clear"
-        className="two-span operator"
-        onClick={props.handleClear}
-      >
-        CLEAR
-      </button>
-      <button
-        id="divide"
-        className="operator"
-        onClick={props.handleOperator}
-        value="/"
-      >
-        /
-      </button>
-      <button
-        id="multiply"
-        className="operator"
-        onClick={props.handleOperator}
-        value="*"
-      >
-        x
-      </button>
-      <button id="seven" onClick={props.handleNumber} value="7">
-        7
-      </button>
-      <button id="eight" onClick={props.handleNumber} value="8">
-        8
-      </button>
-      <button id="nine" onClick={props.handleNumber} value="9">
-        9
-      </button>
-      <button
-        id="subtract"
-        className="operator"
-        onClick={props.handleOperator}
-        value="-"
-      >
-        -
-      </button>
-      <button id="four" onClick={props.handleNumber} value="4">
-        4
-      </button>
-      <button id="five" onClick={props.handleNumber} value="5">
-        5
-      </button>
-      <button id="six" onClick={props.handleNumber} value="6">
-        6
-      </button>
-      <button
-        id="add"
-        className="operator"
-        onClick={props.handleOperator}
-        value="+"
-      >
-        +
-      </button>
-      <button id="one" onClick={props.handleNumber} value="1">
-        1
-      </button>
-      <button id="two" onClick={props.handleNumber} value="2">
-        2
-      </button>
-      <button id="three" onClick={props.handleNumber} value="3">
-        3
-      </button>
-      <button id="zero" className="two-span" onClick={props.handleZero}>
-        0
-      </button>
-      <button id="decimal" onClick={props.handleDecimal}>
-        .
-      </button>
-      <button id="equals" className="operator" onClick={props.handleEvaluate}>
-        =
-      </button>
-    </div>
-  );
-};
-
-// Screens - these are child components of the Calculator parent component
-
-// User can see the entire formula leading up to the final answer e.g. 9 + 6 = 15
-const Formula = (props) => {
-  return (
-    <div className="formula">
-      <p>{props.formula}</p>
-    </div>
-  );
-};
-
-// Displays the current input/answer e.g. entering 9 will replace the screen with 9 (one value at a time)
-const Output = (props) => {
-  return (
-    <div className="output" id="display">
-      <p>{props.output}</p>
-    </div>
-  );
-};
 
 // Credentials
 const Footer = () => {
