@@ -2,12 +2,16 @@ import "./Calculator.scss";
 import React from "react";
 
 // TODO - Overall clean up code and put into appropriate files
+// TODO - Handle exceeding screen
+// TODO - Add Styles
 
 // Constant variables
 const DECIMAL = ".",
   DEFAULT_OUTPUT = "0",
   DEFAULT_FORMULA = "",
   DIGIT = /\d/,
+  MAX_NUM_DIGITS = 10,
+  MAX_DIGITS_REACHED_MESSAGE = "DIGIT LIMIT MET",
   OPERATORS = /[+*/-]/;
 
 function App() {
@@ -30,12 +34,28 @@ class Calculator extends React.Component {
     };
 
     // Binding statements
+    this.displayMaximumDigitsReached = this.displayMaximumDigitsReached.bind(
+      this
+    );
     this.handleClear = this.handleClear.bind(this);
     this.handleDecimal = this.handleDecimal.bind(this);
     this.handleEvaluate = this.handleEvaluate.bind(this);
     this.handleNumber = this.handleNumber.bind(this);
     this.handleOperator = this.handleOperator.bind(this);
     this.handleZero = this.handleZero.bind(this);
+  }
+
+  // When the maximum number of digits that can fit on screen is exceeded, display message with 'blinking effect'
+  displayMaximumDigitsReached() {
+    const currentValue = this.state.output;
+    this.setState({ output: MAX_DIGITS_REACHED_MESSAGE });
+    setTimeout(() => this.setState({ output: "" }), 1000);
+    setTimeout(
+      () => this.setState({ output: MAX_DIGITS_REACHED_MESSAGE }),
+      2000
+    );
+    setTimeout(() => this.setState({ output: "" }), 3000);
+    setTimeout(() => this.setState({ output: currentValue }), 4000);
   }
 
   // Note: handleClear will clear both the output AND memory(formula)
@@ -72,29 +92,30 @@ class Calculator extends React.Component {
   }
 
   handleNumber(e) {
-    const number = e.target.value;
-    // If operator or it is default display (i.e. 0), replace the entire display with this number and add the number onto the formula expression
-    if (
-      OPERATORS.test(this.state.output) ||
-      this.state.output === DEFAULT_OUTPUT
-    ) {
-      this.setState({
-        output: number,
-        formula: this.state.formula + number,
-      });
-    }
-    // Otherwise, add the number onto the output string (i.e. For 2+ digit numbers) and formula expression
-    else {
-      this.setState({
-        output: this.state.output + number,
-        formula: this.state.formula + number,
-      });
+    if (this.state.output.length > MAX_NUM_DIGITS) {
+      this.displayMaximumDigitsReached();
+    } else {
+      const number = e.target.value;
+      if (
+        OPERATORS.test(this.state.output) ||
+        this.state.output === DEFAULT_OUTPUT
+      ) {
+        this.setState({
+          output: number,
+          formula: this.state.formula + number,
+        });
+      } else {
+        this.setState({
+          output: this.state.output + number,
+          formula: this.state.formula + number,
+        });
+      }
     }
   }
 
-  // TODO - Tidy Up handleNumber code
   handleOperator(e) {
     const operatorEntered = e.target.value;
+    const formulaLength = this.state.formula.length;
     this.setState({ output: operatorEntered });
 
     const checkLastTwoAreOperators = (formula) => {
@@ -115,7 +136,7 @@ class Calculator extends React.Component {
           operatorEntered,
         evaluated: false,
       });
-    } else if (DIGIT.test(this.state.formula[this.state.formula.length - 1])) {
+    } else if (DIGIT.test(this.state.formula[formulaLength - 1])) {
       this.setState({ formula: this.state.formula + operatorEntered });
     } else if (
       operatorEntered === "-" &&
@@ -128,14 +149,12 @@ class Calculator extends React.Component {
     ) {
       this.setState({
         formula:
-          this.state.formula.slice(0, this.state.formula.length - 2) +
-          operatorEntered,
+          this.state.formula.slice(0, formulaLength - 2) + operatorEntered,
       });
     } else {
       this.setState({
         formula:
-          this.state.formula.slice(0, this.state.formula.length - 1) +
-          operatorEntered,
+          this.state.formula.slice(0, formulaLength - 1) + operatorEntered,
       });
     }
   }
@@ -166,6 +185,7 @@ class Calculator extends React.Component {
           handleOperator={this.handleOperator}
           handleZero={this.handleZero}
         />
+        <Footer />
       </div>
     );
   }
@@ -175,13 +195,27 @@ class Calculator extends React.Component {
 const Buttons = (props) => {
   return (
     <div className="buttons">
-      <button id="clear" className="two-span" onClick={props.handleClear}>
-        Clear
+      <button
+        id="clear"
+        className="two-span operator"
+        onClick={props.handleClear}
+      >
+        CLEAR
       </button>
-      <button id="divide" onClick={props.handleOperator} value="/">
+      <button
+        id="divide"
+        className="operator"
+        onClick={props.handleOperator}
+        value="/"
+      >
         /
       </button>
-      <button id="multiply" onClick={props.handleOperator} value="*">
+      <button
+        id="multiply"
+        className="operator"
+        onClick={props.handleOperator}
+        value="*"
+      >
         x
       </button>
       <button id="seven" onClick={props.handleNumber} value="7">
@@ -193,7 +227,12 @@ const Buttons = (props) => {
       <button id="nine" onClick={props.handleNumber} value="9">
         9
       </button>
-      <button id="subtract" onClick={props.handleOperator} value="-">
+      <button
+        id="subtract"
+        className="operator"
+        onClick={props.handleOperator}
+        value="-"
+      >
         -
       </button>
       <button id="four" onClick={props.handleNumber} value="4">
@@ -205,7 +244,12 @@ const Buttons = (props) => {
       <button id="six" onClick={props.handleNumber} value="6">
         6
       </button>
-      <button id="add" onClick={props.handleOperator} value="+">
+      <button
+        id="add"
+        className="operator"
+        onClick={props.handleOperator}
+        value="+"
+      >
         +
       </button>
       <button id="one" onClick={props.handleNumber} value="1">
@@ -223,7 +267,7 @@ const Buttons = (props) => {
       <button id="decimal" onClick={props.handleDecimal}>
         .
       </button>
-      <button id="equals" onClick={props.handleEvaluate}>
+      <button id="equals" className="operator" onClick={props.handleEvaluate}>
         =
       </button>
     </div>
@@ -247,6 +291,20 @@ const Output = (props) => {
     <div className="output" id="display">
       <p>{props.output}</p>
     </div>
+  );
+};
+
+// Credentials
+const Footer = () => {
+  return (
+    <footer>
+      <p>
+        Calculator Designed by{" "}
+        <a href="https://github.com/dphogit" target="_blank" rel="noreferrer">
+          dphogit
+        </a>
+      </p>
+    </footer>
   );
 };
 

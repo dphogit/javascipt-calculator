@@ -3,11 +3,13 @@
 // VARIABLES
 
 // Colors
-$display-color: black;
-$output-color: orange;
+$display-color: #333a4d;
+$output-color: #ff9100;
 $formula-color: white;
 $button-font-color: black;
 $button-border-color: grey;
+$button-back-color: rgba(245, 245, 245, 0.9);
+$operator-back-color: #f5900c;
 
 // DIMENSIONS
 $border-radius: 0.75rem;
@@ -30,7 +32,6 @@ body {
 }
 
 .calculator {
-  border: 2px solid;
   height: 30rem;
   width: 20rem;
   border-radius: $border-radius;
@@ -41,6 +42,7 @@ body {
   height: 10rem;
   border-top-left-radius: $border-radius;
   border-top-right-radius: $border-radius;
+  max-width: 100%;
   #display-screen {
     height: 100%;
     text-align: right;
@@ -77,12 +79,24 @@ body {
     border-radius: 0;
     position: relative;
     font-family: $font;
+    font-weight: bold;
     color: $button-font-color;
     font-size: 1.25rem;
     outline: none;
+    background-color: $button-back-color;
+    &:hover {
+      opacity: 0.9;
+    }
+  }
+  #clear {
+    background-color: rgb(221, 34, 34);
+    color: white;
   }
   .two-span {
     width: $two-span-width;
+  }
+  .operator {
+    background-color: $operator-back-color;
   }
   #zero {
     bottom: 2rem;
@@ -95,5 +109,19 @@ body {
     height: $two-span-height;
     bottom: 4rem;
     border-bottom-right-radius: $border-radius;
+  }
+}
+
+footer {
+  font-size: 1.25rem;
+  font-weight: bold;
+  padding-top: 1.5rem;
+  text-align: center;
+  a {
+    text-decoration: none;
+    color: blue;
+    &:hover {
+      text-decoration: underline;
+    }
   }
 }
