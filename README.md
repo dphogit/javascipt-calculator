@@ -3,7 +3,7 @@
 freeCodeCamp Front End Libraries Course Project - Build a Javascript Calcualtor
 Created using HTML/CSS/Javascript React.
 
-image to be added.
+![screenshot](picture.png)
 demo to be added.
 
 Created by dphogit.
